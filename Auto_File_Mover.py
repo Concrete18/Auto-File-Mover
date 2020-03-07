@@ -5,8 +5,7 @@ import fnmatch
 WatchedFolder = 'D:/Downloads'
 
 KeywordDef = {
-    'Wallpaper': 'D:/Google Drive/Photos/Wallpapers',
-    'specific video': 'D:/Google Drive/Video/VideoTest'
+    'Wallpaper': 'D:/Google Drive/Photos/Wallpapers'
 }
 
 FileTypeDef = {
@@ -45,13 +44,14 @@ def MoveByName(TargetDir):
         for FileType in FileTypeDef:
             if File.endswith(FileType):
                 print(File + " Found.")
+                OutputText = 'Specific ' + FileType + ' not found. Moving file named ' + File + ' to default folder.'
+                MoveDestination = FileTypeDef[FileType]
                 for keyword in KeywordDef:
                     if fnmatch.fnmatch(File, '*' + keyword + '*'):
-                        print(keyword + ' Found named ' + File)
-                        FileMove(File, KeywordDef[keyword])
-                    else:
-                        print('Specific ' + FileType + ' not found. Moving file named ' + File + ' to default folder.')
-                        FileMove(File, FileTypeDef[FileType])
+                        OutputText = keyword + ' Found named ' + File
+                        MoveDestination = KeywordDef[keyword]
+                print(OutputText)
+                FileMove(File, MoveDestination)
 
 
 MoveByName(WatchedFolder)
