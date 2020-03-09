@@ -1,3 +1,21 @@
 # Auto File Mover
 
-This is a script for sdearching a watched directory and moving files based on their filetypes and then names so they are placed where they need to go. It works using many if and else statements for now but I may make it better. I only wanted something that worked first as I learn.
+This script searches a watched directory in order to move files based on their filetypes and keywords. It works by using For Loops to go through files in the watched directory. It checks for matches in a file type and keyword Dictionaries.
+
+## Preferences Example
+```Python
+WatchedFolder = 'D:/Downloads'
+
+KeywordDef = {
+    'Wallpaper': 'D:/Google Drive/Photos/Wallpapers'
+}
+
+FileTypeDef = {
+    '.docx': 'D:/Downloads/Documents',
+    '.mp4': 'D:/Downloads/Video',
+    '.png': 'D:/Downloads/Images',
+    '.jpg': 'D:/Downloads/Images',
+    '.txt': 'D:/Downloads/Documents',
+    '.exe': 'D:/Downloads/Installers'
+}
+```
