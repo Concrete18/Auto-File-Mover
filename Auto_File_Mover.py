@@ -54,6 +54,8 @@ def MoveByName(TargetDir):
                 FileMove(File, MoveDestination)
 
 
-MoveByName(WatchedFolder)
+WatchedFolderSet = input("Press Enter to continue with default \n or type cd to enter new directory.") or WatchedFolder
 
-print('Finished File check of ' + WatchedFolder + '.')
+MoveByName(WatchedFolderSet)
+
+print('Finished File check of ' + WatchedFolderSet + '.')
