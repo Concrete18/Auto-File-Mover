@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import fnmatch
 
@@ -54,8 +55,8 @@ def MoveByName(TargetDir):
                 FileMove(File, MoveDestination)
 
 
-WatchedFolderSet = input("Press Enter to continue with default \n or type cd to enter new directory.") or WatchedFolder
-
+WatchedFolderSet = input("Press Enter to continue with default \n Type cd to enter new directory") or WatchedFolder
 MoveByName(WatchedFolderSet)
-
 print('Finished File check of ' + WatchedFolderSet + '.')
+input("Press Enter to Exit")
+sys.exit()
