@@ -3,7 +3,7 @@ import sys
 import shutil
 import fnmatch
 
-WatchedFolder = 'D:/Downloads'
+WatchedFolderDef = 'D:/Downloads'
 
 KeywordDef = {
     'Wallpaper': 'D:/Google Drive/Photos/Wallpapers'
@@ -24,7 +24,7 @@ def FileMove(Target, Dest):
         pass
     else:
         os.mkdir(Dest)
-    shutil.move(WatchedFolder + '/' + Target, Dest)
+    shutil.move(WatchedFolderDef + '/' + Target, Dest)
     print('Move Complete.')
 
 
@@ -33,11 +33,11 @@ def FileDelete(Target, Type):
     print('Found an ' + Type + ' named ' + Target + '.')
     InstallerDelResp = input('Do you want to delete it?')
     if InstallerDelResp == 'yes' or InstallerDelResp == 'y':
-        os.remove(WatchedFolder + '/' + Target)
+        os.remove(WatchedFolderDef + '/' + Target)
         print('Deleted File.')
     else:
         print('Ok, copying ' + Target + 'to the ' + Type + ' default folder.')
-        shutil.move(WatchedFolder + '/' + Target, FileTypeDef[Type])
+        shutil.move(WatchedFolderDef + '/' + Target, FileTypeDef[Type])
 
 
 def MoveByName(TargetDir):
@@ -55,8 +55,8 @@ def MoveByName(TargetDir):
                 FileMove(File, MoveDestination)
 
 
-WatchedFolderSet = input("Press Enter to continue with default \n Type cd to enter new directory") or WatchedFolder
-MoveByName(WatchedFolderSet)
-print('Finished File check of ' + WatchedFolderSet + '.')
+WatchedFolderTemp = input("Press Enter to continue with default \n Type cd to enter new directory") or WatchedFolderDef
+MoveByName(WatchedFolderTemp)
+print('Finished File check of ' + WatchedFolderTemp + '.')
 input("Press Enter to Exit")
 sys.exit()
