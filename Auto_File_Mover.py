@@ -6,7 +6,7 @@ import fnmatch
 WatchedFolderDef = 'D:/Downloads'
 
 KeywordDef = {
-    'Wallpaper': 'D:/Google Drive/Photos/Wallpapers'
+    'Wallpaper': 'D:/Downloads/Wallpapers',
 }
 
 FileTypeDef = {
@@ -15,29 +15,35 @@ FileTypeDef = {
     '.png': 'D:/Downloads/Images',
     '.jpg': 'D:/Downloads/Images',
     '.txt': 'D:/Downloads/Documents',
-    '.exe': 'D:/Downloads/Installers'
+    '.exe': 'D:/Downloads/Installers',
+    '.wav': 'D:/Downloads/Audio Files',
 }
+
+DeleteDef = {'.exe', '.test'}
 
 
 def FileMove(Target, Dest):
-    if os.path.isdir(Dest) is True:
+    if Dest == 'cancel':
         pass
     else:
-        os.mkdir(Dest)
-    shutil.move(WatchedFolderDef + '/' + Target, Dest)
-    print('Move Complete.')
+        if os.path.isdir(Dest) is True:
+            pass
+        else:
+            os.mkdir(Dest)
+        shutil.move(WatchedFolderDef + '/' + Target, Dest)
+        print('Move Complete.')
+        print()  # Blank line for Spacing
 
 
-#  todo reincorporate into MoveByName Function.
 def FileDelete(Target, Type):
-    print('Found an ' + Type + ' named ' + Target + '.')
+    MoveDestination = ''
     InstallerDelResp = input('Do you want to delete it?')
     if InstallerDelResp == 'yes' or InstallerDelResp == 'y':
         os.remove(WatchedFolderDef + '/' + Target)
         print('Deleted File.')
     else:
         print('Ok, copying ' + Target + 'to the ' + Type + ' default folder.')
-        shutil.move(WatchedFolderDef + '/' + Target, FileTypeDef[Type])
+        FileMove(Target, FileTypeDef[Type])
 
 
 def MoveByName(TargetDir):
@@ -47,16 +53,24 @@ def MoveByName(TargetDir):
                 print(File + " Found.")
                 OutputText = 'Specific ' + FileType + ' not found. Moving file named ' + File + ' to default folder.'
                 MoveDestination = FileTypeDef[FileType]
-                for keyword in KeywordDef:
-                    if fnmatch.fnmatch(File, '*' + keyword + '*'):
-                        OutputText = keyword + ' Found named ' + File
-                        MoveDestination = KeywordDef[keyword]
+                for Keyword in KeywordDef:
+                    if fnmatch.fnmatch(File, '*' + Keyword + '*'):
+                        OutputText = Keyword + ' Found named ' + File
+                        MoveDestination = KeywordDef[Keyword]
+                for ToDel in DeleteDef:
+                    if fnmatch.fnmatch(File, '*' + ToDel + '*'):
+                        OutputText = ''
+                        FileDelete(File, ToDel)
+                        MoveDestination = 'cancel'
                 print(OutputText)
                 FileMove(File, MoveDestination)
 
 
-WatchedFolderTemp = input("Press Enter to continue with default \n Type cd to enter new directory") or WatchedFolderDef
+WatchedFolderTemp = input("Press Enter to continue with default\nType cd to enter new directory") or WatchedFolderDef
+print()  # Blank line for Spacing
+
 MoveByName(WatchedFolderTemp)
 print('Finished File check of ' + WatchedFolderTemp + '.')
+
 input("Press Enter to Exit")
 sys.exit()
