@@ -2,13 +2,17 @@ import os
 import sys
 import shutil
 import fnmatch
+from tkinter import Tk, Label, Button, Frame, Entry, filedialog
+# import tkinter as tk
 
-WatchedFolderDef = 'D:/Downloads'
 
+# Checks for keywords in file names.
+# Todo Set to only count keywords for certain file types.
 KeywordDef = {
     'Wallpaper': 'D:/Downloads/Wallpapers',
 }
 
+# Checks for specific file types.
 FileTypeDef = {
     '.docx': 'D:/Downloads/Documents',
     '.mp4': 'D:/Downloads/Video',
@@ -19,6 +23,9 @@ FileTypeDef = {
     '.wav': 'D:/Downloads/Audio Files',
 }
 
+# These file types will cause the script to ask if you want to delete them.
+# Inputting yes/y deletes the .exe file.
+# Inputting no/n means it reverts to moving to FileTypeDef.
 DeleteDef = {'.exe', '.test'}
 
 
@@ -54,7 +61,7 @@ def MoveByName(TargetDir):
                 OutputText = 'Specific ' + FileType + ' not found. Moving file named ' + File + ' to default folder.'
                 MoveDestination = FileTypeDef[FileType]
                 for Keyword in KeywordDef:
-                    if fnmatch.fnmatch(File, '*' + Keyword + '*'):
+                    if fnmatch.fnmatch(File, f'*{Keyword}*'):
                         OutputText = Keyword + ' Found named ' + File
                         MoveDestination = KeywordDef[Keyword]
                 for ToDel in DeleteDef:
@@ -66,11 +73,26 @@ def MoveByName(TargetDir):
                 FileMove(File, MoveDestination)
 
 
-WatchedFolderTemp = input("Press Enter to continue with default\nType cd to enter new directory") or WatchedFolderDef
-print()  # Blank line for Spacing
+WatchedFolderDef = 'D:/Downloads'
+WatchedFolder = ''
 
-MoveByName(WatchedFolderTemp)
-print('Finished File check of ' + WatchedFolderTemp + '.')
+
+def StartFunction():
+    global WatchedFolder
+    WatchedFolder = input("Press Enter to continue with default\nType cd to enter new directory")
+    print()  # Blank line for Spacing
+    if WatchedFolder == 'cd':
+        WatchedFolder = filedialog.askdirectory(initialdir="C:/", title="Select Directory")
+        if WatchedFolder == '':
+            print('No Directory Selected\nSwitching to Default Directory.\n')
+            WatchedFolder = WatchedFolderDef
+    else:
+        WatchedFolder = WatchedFolderDef
+    return WatchedFolder
+
+
+MoveByName(StartFunction())
+print(f'Finished File check of {WatchedFolder}.')
 
 input("Press Enter to Exit")
 sys.exit()
