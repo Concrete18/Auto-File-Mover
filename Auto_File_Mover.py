@@ -78,6 +78,7 @@ WatchedFolder = ''
 
 
 def StartFunction():
+    Tk().withdraw()
     global WatchedFolder
     WatchedFolder = input("Press Enter to continue with default\nType cd to enter new directory")
     print()  # Blank line for Spacing
