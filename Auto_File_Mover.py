@@ -1,89 +1,95 @@
-import os
-import sys
-import shutil
+import tkinter.filedialog
+import tkinter as tk
+import threading
 import fnmatch
-from tkinter import Tk, Label, Button, Frame, Entry, filedialog
-# import tkinter as tk
+import shutil
+import time
+import sys
+import os
 
 
 # Checks for keywords in file names.
 # Todo Set to only count keywords for certain file types.
+
 KeywordDef = {
-    'Wallpaper': 'D:/Downloads/Wallpapers',
+    'Wallpaper': 'C:/Downloads/Wallpapers',
 }
 
 # Checks for specific file types.
 FileTypeDef = {
-    '.docx': 'D:/Downloads/Documents',
-    '.mp4': 'D:/Downloads/Video',
-    '.png': 'D:/Downloads/Images',
-    '.jpg': 'D:/Downloads/Images',
-    '.txt': 'D:/Downloads/Documents',
-    '.exe': 'D:/Downloads/Installers',
-    '.wav': 'D:/Downloads/Audio Files',
+    '.docx': 'C:/Downloads/Documents',
+    '.mp4': 'C:/Downloads/Video',
+    '.png': 'C:/Downloads/Images',
+    '.jpg': 'C:/Downloads/Images',
+    '.txt': 'C:/Downloads/Documents',
+    '.exe': 'C:/Downloads/Installers',
+    '.wav': 'C:/Downloads/Audio Files',
+    '.zip': 'C:/Downloads/Compressed Files',
+    '.rar': 'C:/Downloads/Compressed Files',
+    '.7z': 'C:/Downloads/Compressed Files',
 }
+WatchedFolderDef = 'D:/Downloads'
+WatchedFolder = ''
 
 # These file types will cause the script to ask if you want to delete them.
 # Inputting yes/y deletes the .exe file.
 # Inputting no/n means it reverts to moving to FileTypeDef.
-DeleteDef = {'.exe', '.test'}
-
+DeleteDef = {'.exe', '.test', '.zip', '.rar', '.7z'}
+threads = []
 
 def FileMove(Target, Dest):
-    if Dest == 'cancel':
-        pass
-    else:
-        if os.path.isdir(Dest) is True:
-            pass
-        else:
+    if Dest != 'cancel':
+        if os.path.isdir(Dest) is False:
             os.mkdir(Dest)
+        if os.path.exists(f'{Dest}/{Target}'):
+            print('File already exists. Leaving File where it is.')
+            return
+        file_size = os.path.getsize(f'{WatchedFolderDef}/{Target}')/(1024*1024*1024) # Converts bytes to gigs - Use /(1024*1024) if MB
+        if  round(file_size, 2) > 1:
+            print('Large File Found, prepare for longer then normal transfer.')
         shutil.move(WatchedFolderDef + '/' + Target, Dest)
-        print('Move Complete.')
-        print()  # Blank line for Spacing
-
 
 def FileDelete(Target, Type):
     MoveDestination = ''
-    InstallerDelResp = input('Do you want to delete it?')
+    dont_cancel = True
+    InstallerDelResp = input(f'{Target} found.\nDo you want to delete it?\n')
     if InstallerDelResp == 'yes' or InstallerDelResp == 'y':
-        os.remove(WatchedFolderDef + '/' + Target)
+        os.remove(f'{WatchedFolderDef}/{Target}')
         print('Deleted File.')
+        dont_cancel = False
+    elif InstallerDelResp == 'no' or InstallerDelResp == 'n':
+        print(f'Ok, copying {Target} to the {Type} default folder.\n')
     else:
-        print('Ok, copying ' + Target + 'to the ' + Type + ' default folder.')
+        print(f'Unknown Response, copying {Target} to the {Type} default folder.\n')
+    if dont_cancel:
         FileMove(Target, FileTypeDef[Type])
-
 
 def MoveByName(TargetDir):
     for File in os.listdir(TargetDir):
         for FileType in FileTypeDef:
             if File.endswith(FileType):
-                print(File + " Found.")
-                OutputText = 'Specific ' + FileType + ' not found. Moving file named ' + File + ' to default folder.'
+                OutputText = f'Specific {FileType} not found.\nMoving file named {File} to default folder.\n'
                 MoveDestination = FileTypeDef[FileType]
                 for Keyword in KeywordDef:
                     if fnmatch.fnmatch(File, f'*{Keyword}*'):
-                        OutputText = Keyword + ' Found named ' + File
+                        OutputText = f'{Keyword} keyword found in file named {File}.\n'
                         MoveDestination = KeywordDef[Keyword]
                 for ToDel in DeleteDef:
-                    if fnmatch.fnmatch(File, '*' + ToDel + '*'):
-                        OutputText = ''
+                    if fnmatch.fnmatch(File, f'*{ToDel}*'):
                         FileDelete(File, ToDel)
-                        MoveDestination = 'cancel'
+                        MoveDestination = False
                 print(OutputText)
-                FileMove(File, MoveDestination)
-
-
-WatchedFolderDef = 'D:/Downloads'
-WatchedFolder = ''
-
+                if MoveDestination:
+                    t = threading.Thread(target=FileMove, args=(File, MoveDestination))
+                    t.start()
+                    threads.append(t)
 
 def StartFunction():
-    Tk().withdraw()
-    global WatchedFolder
-    WatchedFolder = input("Press Enter to continue with default\nType cd to enter new directory")
-    print()  # Blank line for Spacing
+    tk.Tk().withdraw()
+    # global WatchedFolder
+    WatchedFolder = input("Press Enter to continue with default\nType cd to enter new directory\n")
     if WatchedFolder == 'cd':
-        WatchedFolder = filedialog.askdirectory(initialdir="C:/", title="Select Directory")
+        WatchedFolder = tk.filedialog.askdirectory(initialdir="C:/", title="Select Directory")
         if WatchedFolder == '':
             print('No Directory Selected\nSwitching to Default Directory.\n')
             WatchedFolder = WatchedFolderDef
@@ -91,9 +97,17 @@ def StartFunction():
         WatchedFolder = WatchedFolderDef
     return WatchedFolder
 
+WatchedFolder = StartFunction()
+overall_start = time.perf_counter()
+MoveByName(WatchedFolder)
 
-MoveByName(StartFunction())
+for thread in threads:
+    thread.join()
+
 print(f'Finished File check of {WatchedFolder}.')
+overall_finish = time.perf_counter()
+elapsed_time = round(overall_finish-overall_start, 2)
+print(f'Overall Time Elapsed: {elapsed_time} Seconds.\n')
 
 input("Press Enter to Exit")
 sys.exit()
