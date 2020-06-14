@@ -1,4 +1,4 @@
-# Auto File Mover
+# Auto Folder Cleaner
 
 This script searches a watched directory in order to move files based on their filetypes and keywords. It works by using For Loops to go through files in the watched directory. It checks for matches in a file type and keyword Dictionaries.
 
