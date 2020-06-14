@@ -86,7 +86,6 @@ def MoveByName(TargetDir):
 
 def StartFunction():
     tk.Tk().withdraw()
-    # global WatchedFolder
     WatchedFolder = input("Press Enter to continue with default\nType cd to enter new directory\n")
     if WatchedFolder == 'cd':
         WatchedFolder = tk.filedialog.askdirectory(initialdir="C:/", title="Select Directory")
