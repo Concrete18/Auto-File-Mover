@@ -30,6 +30,7 @@ FileTypeDef = {
 }
 WatchedFolderDef = 'D:/Downloads'
 WatchedFolder = ''
+autostart = 0 #  Set to 1 to autostart without asking for if you want to change the directory.
 
 # These file types will cause the script to ask if you want to delete them.
 # Inputting yes/y deletes the .exe file.
@@ -96,9 +97,13 @@ def StartFunction():
         WatchedFolder = WatchedFolderDef
     return WatchedFolder
 
-WatchedFolder = StartFunction()
-overall_start = time.perf_counter()
-MoveByName(WatchedFolder)
+if autostart != 1:
+    WatchedFolder = StartFunction()
+else:
+    WatchedFolder = WatchedFolderDef
+    print(f'Autostarting in {WatchedFolderDef}.\n')
+    overall_start = time.perf_counter()
+    MoveByName(WatchedFolder)
 
 for thread in threads:
     thread.join()
