@@ -15,6 +15,11 @@ KeywordDef = {
     'Wallpaper': 'C:/Downloads/Wallpapers',
 }
 
+file_type_def = {
+    'image': (.jpg, png, gif, ),
+    'video': ('.mp4, .wave)
+}
+
 # Checks for specific file types.
 FileTypeDef = {
     '.docx': 'C:/Downloads/Documents',
