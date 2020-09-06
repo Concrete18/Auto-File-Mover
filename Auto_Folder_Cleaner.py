@@ -45,31 +45,32 @@ DeleteDef = {'.exe', '.test', '.zip', '.rar', '.7z'}
 threads = []
 
 def FileMove(Target, Dest):
+    '''Moves Target file to Destination after making the destination directory if it does not exist.
+    It will also leave the file where it is if it already exists at the destination.'''
     if Dest != 'cancel':
         if os.path.isdir(Dest) is False:
             os.mkdir(Dest)
-        if os.path.exists(f'{Dest}/{Target}'):
-            print('File already exists. Leaving File where it is.')
-            return
-        file_size = os.path.getsize(f'{WatchedFolderDef}/{Target}')/(1024*1024*1024) # Converts bytes to gigs - Use /(1024*1024) if MB
-        if  round(file_size, 2) > 1:
-            print('Large File Found, prepare for longer then normal transfer.')
-        shutil.move(WatchedFolderDef + '/' + Target, Dest)
+        if os.path.exists(os.path.join(Dest, Target)):
+            print(f'{Target} already exists.\nLeaving file as is.')
+        else:
+            file_size = os.path.getsize(os.path.join(WatchedFolderDef, Target))/(1024*1024*1024) # Converts bytes to gigs - Use /(1024*1024) if MB
+            shutil.move(os.path.join(WatchedFolderDef, Target), Dest)
 
-def FileDelete(Target, Type):
+def FileDelete(target, file_type, delete = True):
+    '''Deletes the Target file if you say yes but sends to default folder if not.'''
     MoveDestination = ''
     dont_cancel = True
-    InstallerDelResp = input(f'{Target} found.\nDo you want to delete it?\n')
+    InstallerDelResp = input(f'{target} found.\nDo you want to delete it?\n')
     if InstallerDelResp == 'yes' or InstallerDelResp == 'y':
-        os.remove(f'{WatchedFolderDef}/{Target}')
+        os.remove(f'{WatchedFolderDef}/{target}')
         print('Deleted File.')
         dont_cancel = False
     elif InstallerDelResp == 'no' or InstallerDelResp == 'n':
-        print(f'Ok, copying {Target} to the {Type} default folder.\n')
+        print(f'Ok, copying {target} to the {file_type} default folder.\n')
     else:
-        print(f'Unknown Response, copying {Target} to the {Type} default folder.\n')
+        print(f'Unknown Response, copying {target} to the {file_type} default folder.\n')
     if dont_cancel:
-        FileMove(Target, file_def_loc[Type])
+        FileMove(target, file_def_loc[file_type])
 
 def MoveByName(TargetDir):
     for File in os.listdir(TargetDir):
@@ -121,10 +122,11 @@ if __name__ == '__main__':
     for thread in threads:
         thread.join()
 
-    print(f'Finished File check of {WatchedFolder}.')
+    print(f'\nFinished File check of {WatchedFolder}.')
     overall_finish = time.perf_counter()
     elapsed_time = round(overall_finish-overall_start, 2)
-    print(f'Overall Time Elapsed: {elapsed_time} Seconds.\n')
+    converted_elapsed_time = f'{int(elapsed_time/60)}:{str(elapsed_time%60).zfill(2)}'
+    print(f'Overall Time Elapsed: {converted_elapsed_time}.\n')
 
     input("Press Enter to Exit")
     sys.exit()
