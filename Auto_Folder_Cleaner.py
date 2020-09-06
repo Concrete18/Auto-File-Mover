@@ -1,7 +1,7 @@
 from pyfiglet import Figlet
 import tkinter.filedialog
 import tkinter as tk
-import threading
+from threading import Thread
 import fnmatch
 import shutil
 import time
@@ -11,13 +11,14 @@ import os
 # Checks for keywords in file names.
 # Todo Set to only count keywords for certain file types.
 
-KeywordDef = {
+keyword_def = {
     'Wallpaper': 'C:/Downloads/Wallpapers',
 }
 
 file_type_def = {
     'image': ('.jpg', '.png', '.gif'),
-    'video': ('.mp4', '.wave')
+    'video': ('.mp4', '.wave'),
+    'text': ('.txt', '.docx', '.doc', '.pdf')
 }
 
 # Checks for specific file types.
@@ -26,6 +27,7 @@ file_def_loc = {
     '.mp4': 'C:/Downloads/Video',
     '.png': 'C:/Downloads/Images',
     '.jpg': 'C:/Downloads/Images',
+    '.gif': 'C:/Downloads/Images',
     '.txt': 'C:/Downloads/Documents',
     '.exe': 'C:/Downloads/Installers',
     '.wav': 'C:/Downloads/Audio Files',
@@ -34,99 +36,98 @@ file_def_loc = {
     '.7z': 'C:/Downloads/Compressed Files',
 }
 
-WatchedFolderDef = 'D:/Downloads'
-WatchedFolder = ''
-autostart = 0 #  Set to 1 to autostart without asking for if you want to change the directory.
-
-# These file types will cause the script to ask if you want to delete them.
-# Inputting yes/y deletes the .exe file.
-# Inputting no/n means it reverts to moving to file_def_loc.
-DeleteDef = {'.exe', '.test', '.zip', '.rar', '.7z'}
 threads = []
+watched_folder = 'C:/Downloads'
+autostart = 0 #  Set to 1 to autostart without asking for if you want to change the directory.
+delete_def = {'.exe', '.test', '.zip', '.rar', '.7z'} # These file types will cause the script to ask if you want to delete them.
 
-def FileMove(Target, Dest):
+
+def Set_Destination(watched_folder, f):
+    '''This function checks for matches for file extensions and keywords.
+    Using what is found, it sets the destination for the file.'''
+    destination = 'skip'
+    for file_type in file_def_loc:
+        if f.endswith(file_type):
+            destination = file_def_loc[file_type]
+            for to_delete in delete_def:
+                if fnmatch.fnmatch(f, f'*{to_delete}*'):
+                    del_resp = input(f'{f} found.\nDo you want to delete it?\n')
+                    if del_resp == 'yes' or del_resp == 'y':
+                        os.remove(os.path.join(watched_folder, f))
+                        print('Deleted File.')
+                        return 'skip'
+                    else:
+                        print(f'Ok, copying {f} to the {file_type} default folder.\n')
+                        destination =  file_def_loc[file_type]
+            for keyword in keyword_def:
+                if fnmatch.fnmatch(f, f'*{keyword}*'):
+                    destination = keyword_def[keyword]
+                    print(keyword_def[keyword])
+    return destination
+
+
+def File_Move(watched_folder, target, destination):
     '''Moves Target file to Destination after making the destination directory if it does not exist.
     It will also leave the file where it is if it already exists at the destination.'''
-    if Dest != 'cancel':
-        if os.path.isdir(Dest) is False:
-            os.mkdir(Dest)
-        if os.path.exists(os.path.join(Dest, Target)):
-            print(f'{Target} already exists.\nLeaving file as is.')
-        else:
-            file_size = os.path.getsize(os.path.join(WatchedFolderDef, Target))/(1024*1024*1024) # Converts bytes to gigs - Use /(1024*1024) if MB
-            shutil.move(os.path.join(WatchedFolderDef, Target), Dest)
-
-def FileDelete(target, file_type, delete = True):
-    '''Deletes the Target file if you say yes but sends to default folder if not.'''
-    MoveDestination = ''
-    dont_cancel = True
-    InstallerDelResp = input(f'{target} found.\nDo you want to delete it?\n')
-    if InstallerDelResp == 'yes' or InstallerDelResp == 'y':
-        os.remove(f'{WatchedFolderDef}/{target}')
-        print('Deleted File.')
-        dont_cancel = False
-    elif InstallerDelResp == 'no' or InstallerDelResp == 'n':
-        print(f'Ok, copying {target} to the {file_type} default folder.\n')
+    if os.path.isdir(destination) is False:
+        os.mkdir(destination)
+    if os.path.exists(os.path.join(destination, target)):
+        print(f'{target} already exists.\nLeaving file as is.')
     else:
-        print(f'Unknown Response, copying {target} to the {file_type} default folder.\n')
-    if dont_cancel:
-        FileMove(target, file_def_loc[file_type])
+        shutil.move(os.path.join(watched_folder, target), destination)
 
-def MoveByName(TargetDir):
-    for File in os.listdir(TargetDir):
-        for FileType in file_def_loc:
-            if File.endswith(FileType):
-                OutputText = f'Specific {FileType} not found.\nMoving file named {File} to default folder.\n'
-                MoveDestination = file_def_loc[FileType]
-                for Keyword in KeywordDef:
-                    if fnmatch.fnmatch(File, f'*{Keyword}*'):
-                        OutputText = f'{Keyword} keyword found in file named {File}.\n'
-                        MoveDestination = KeywordDef[Keyword]
-                for ToDel in DeleteDef:
-                    if fnmatch.fnmatch(File, f'*{ToDel}*'):
-                        FileDelete(File, ToDel)
-                        MoveDestination = False
-                print(OutputText)
-                if MoveDestination:
-                    t = threading.Thread(target=FileMove, args=(File, MoveDestination))
-                    t.start()
-                    threads.append(t)
 
-def StartFunction():
+def Move_By_Name(watched_folder):
+    '''ph'''
+    file_moved_count = 0
+    for f in os.listdir(watched_folder):
+        print(f)
+        destination = Set_Destination(watched_folder, f)
+        print(destination)
+        if destination != 'skip':
+            file_moved_count += 1
+            file_move_thread = Thread(target=File_Move, args=(watched_folder, f, destination))
+            file_move_thread.start()
+            threads.append(file_move_thread)
+    return file_moved_count
+
+
+def Set_Watchd_Folder():
+    '''ph'''
     tk.Tk().withdraw()
-    WatchedFolder = input("Press Enter to continue with default\nType cd to enter new directory\n")
-    if WatchedFolder == 'cd':
-        WatchedFolder = tk.filedialog.askdirectory(initialdir="C:/", title="Select Directory")
-        if WatchedFolder == '':
-            print('No Directory Selected\nSwitching to Default Directory.\n')
-            WatchedFolder = WatchedFolderDef
-    else:
-        WatchedFolder = WatchedFolderDef
-    return WatchedFolder
+    watched_folder = input("Press Enter to continue with default\nType cd to enter new directory\n")
+    if watched_folder == 'cd':
+        watched_folder = tk.filedialog.askdirectory(initialdir="C:/", title="Select Directory")
+    return watched_folder
 
-if __name__ == '__main__':
+
+def Main(watched_folder):
+    '''ph'''
     title = 'Auto Folder Cleaner'
     try:
         text = Figlet(font='slant')
-        print(text.renderText(f'{title}\n'))
+        print(text.renderText(title))
     except:
         print(title)
     if autostart != 1:
-        WatchedFolder = StartFunction()
+        watched_folder = Set_Watchd_Folder()
     else:
-        WatchedFolder = WatchedFolderDef
-        print(f'Autostarting in {WatchedFolderDef}.\n')
+        print(f'Autostarting in {watched_folder}.')
         overall_start = time.perf_counter()
-        MoveByName(WatchedFolder)
-
+        file_moved_count = Move_By_Name(watched_folder)
     for thread in threads:
         thread.join()
-
-    print(f'\nFinished File check of {WatchedFolder}.')
+    print(f'\nFinished file check of {watched_folder}.\n{file_moved_count} files moved.')
     overall_finish = time.perf_counter()
     elapsed_time = round(overall_finish-overall_start, 2)
-    converted_elapsed_time = f'{int(elapsed_time/60)}:{str(elapsed_time%60).zfill(2)}'
-    print(f'Overall Time Elapsed: {converted_elapsed_time}.\n')
-
-    input("Press Enter to Exit")
+    if elapsed_time != 0:
+        converted_elapsed_time = f'{int(elapsed_time/60)}:{int(str(elapsed_time%60).zfill(2))}'
+    else:
+        converted_elapsed_time = 'Instant'
+    print(f'Overall Time Elapsed: {converted_elapsed_time}\n')
+    input("Press Enter to Exit\n")
     sys.exit()
+
+
+if __name__ == '__main__':
+    Main(watched_folder)
