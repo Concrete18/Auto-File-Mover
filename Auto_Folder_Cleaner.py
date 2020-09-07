@@ -78,7 +78,8 @@ def File_Move(watched_folder, target, destination):
 
 
 def Move_By_Name(watched_folder):
-    '''ph'''
+    '''This script checks each file in the watched folder and figures out the destination if any exist.
+    Once a destinations are found, it moves the files via threads.'''
     file_moved_count = 0
     for f in os.listdir(watched_folder):
         print(f)
@@ -92,17 +93,19 @@ def Move_By_Name(watched_folder):
     return file_moved_count
 
 
-def Set_Watchd_Folder():
-    '''ph'''
+def Set_Watched_Folder(watched_folder):
+    '''Sets the Watched folder via tkinter Directory Dialog if you type cd. otherwise it uses what you entered for the watched folder.'''
     tk.Tk().withdraw()
-    watched_folder = input("Press Enter to continue with default\nType cd to enter new directory\n")
-    if watched_folder == 'cd':
+    response = input("Press Enter to continue with default\nType cd to enter new directory\n")
+    if response == 'cd':
         watched_folder = tk.filedialog.askdirectory(initialdir="C:/", title="Select Directory")
+    if response == '':
+        watched_folder = watched_folder
     return watched_folder
 
 
 def Main(watched_folder):
-    '''ph'''
+    '''This is the main function that introduces the script and sets up backbone for everything.'''
     title = 'Auto Folder Cleaner'
     try:
         text = Figlet(font='slant')
@@ -110,7 +113,7 @@ def Main(watched_folder):
     except:
         print(title)
     if autostart != 1:
-        watched_folder = Set_Watchd_Folder()
+        watched_folder = Set_Watched_Folder(watched_folder)
     else:
         print(f'Autostarting in {watched_folder}.')
         overall_start = time.perf_counter()
