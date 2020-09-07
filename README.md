@@ -5,6 +5,7 @@ This script searches a watched directory in order to move files based on their f
 ## Features
 
 * Fully Configurable preferences(Example Below).
+* Json based config file with PC name detection for choosing the config to use.
 * Auto move files based on keywords or filetypes.
 * Ask to delete files based on a delete file type list.
 * AutoStart Capable but also has File Dialog to choose any folder for execution.
@@ -13,7 +14,6 @@ This script searches a watched directory in order to move files based on their f
 ## Future Plans
 
 * Progress Bar (Once I figure out how to)
-* sdd
 
 ## Preferences Example
 
