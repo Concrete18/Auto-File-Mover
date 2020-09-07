@@ -14,7 +14,6 @@ if socket.gethostname() == 'Aperture-Two':
     config = 'personal_config.json'
 else:
     config = 'config.json'
-
 with open(config) as json_file:
     data = json.load(json_file)
 
