@@ -72,6 +72,7 @@ def File_Move(watched_folder, target, destination):
         shutil.move(os.path.join(watched_folder, target), destination)
 
 
+# Initializes the thead list for use in Move_By_Name() and Main()
 threads = []
 
 

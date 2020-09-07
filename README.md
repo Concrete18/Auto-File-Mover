@@ -17,26 +17,43 @@ This script searches a watched directory in order to move files based on their f
 
 ## Preferences Example
 
-```Python
-WatchedFolderDef = 'D:/Downloads'
-
-# Checks for keywords in file names.
-KeywordDef = {
-    'Wallpaper': 'D:/Downloads/Wallpapers',
+```json
+{
+    "config": {
+        "watched folder": [
+            "C:/Downloads"
+        ],
+        "autostart": [
+            0
+        ],
+        "keyword folder destinations": {
+            "Wallpaper": "C:/Downloads/Wallpapers"
+        },
+        "file type definitions": {
+            "image": [".jpg", ".png", ".gif"],
+            "video": [".mp4", ".wave"],
+            "text": [".txt", ".docx", ".doc", ".pdf"]
+        },
+        "file type folder destinations": {
+            ".docx": "C:/Downloads/Documents",
+            ".mp4": "C:/Downloads/Video",
+            ".png": "C:/Downloads/Images",
+            ".jpg": "C:/Downloads/Images",
+            ".gif": "C:/Downloads/Images",
+            ".txt": "C:/Downloads/Documents",
+            ".exe": "C:/Downloads/Installers",
+            ".wav": "C:/Downloads/Audio Files",
+            ".zip": "C:/Downloads/Compressed Files",
+            ".rar": "C:/Downloads/Compressed Files",
+            ".7z": "C:/Downloads/Compressed Files"
+        },
+        "delete check list": [
+        ".exe",
+        ".test",
+        ".zip",
+        ".rar",
+        ".7z"
+        ]
+    }
 }
-
-# Checks for specific file types.
-FileTypeDef = {
-    '.docx': 'D:/Downloads/Documents',
-    '.mp4': 'D:/Downloads/Video',
-    '.png': 'D:/Downloads/Images',
-    '.jpg': 'D:/Downloads/Images',
-    '.txt': 'D:/Downloads/Documents',
-    '.exe': 'D:/Downloads/Installers',
-    '.wav': 'D:/Downloads/Audio Files',
-}
-
-# These file types will cause the script to ask if you want to delete them.
-# No means it reverts to moving to FileTypeDef.
-DeleteDef = {'.exe', '.test'}
 ```
