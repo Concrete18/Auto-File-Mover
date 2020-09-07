@@ -6,13 +6,14 @@ This script searches a watched directory in order to move files based on their f
 
 * Fully Configurable preferences(Example Below).
 * Auto move files based on keywords or filetypes.
+* Ask to delete files based on a delete file type list.
 * AutoStart Capable but also has File Dialog to choose any folder for execution.
 * Threading for completing multiple transfers at a time.
-* Warns of larger files that will take longer to move.
 
 ## Future Plans
 
 * Progress Bar (Once I figure out how to)
+* sdd
 
 ## Preferences Example
 

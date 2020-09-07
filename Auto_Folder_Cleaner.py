@@ -1,45 +1,40 @@
 from pyfiglet import Figlet
+from threading import Thread
 import tkinter.filedialog
 import tkinter as tk
-from threading import Thread
 import fnmatch
+import socket
 import shutil
 import time
+import json
 import sys
 import os
 
+if socket.gethostname() == 'Aperture-Two':
+    config = 'personal_config.json'
+else:
+    config = 'config.json'
+
+with open(config) as json_file:
+    data = json.load(json_file)
+
+# Default watcher folder
+watched_folder = data['config']['watched folder'][0]
+
+# Autostart using default folder toggle.
+autostart = data['config']['autostart'][0]
+
 # Checks for keywords in file names.
-# Todo Set to only count keywords for certain file types.
+keyword_def = data['config']['keyword folder destinations']
+# TODO Set to only count keywords for certain file types.
 
-keyword_def = {
-    'Wallpaper': 'C:/Downloads/Wallpapers',
-}
-
-file_type_def = {
-    'image': ('.jpg', '.png', '.gif'),
-    'video': ('.mp4', '.wave'),
-    'text': ('.txt', '.docx', '.doc', '.pdf')
-}
+file_type_def = data['config']['file type definitions']
 
 # Checks for specific file types.
-file_def_loc = {
-    '.docx': 'C:/Downloads/Documents',
-    '.mp4': 'C:/Downloads/Video',
-    '.png': 'C:/Downloads/Images',
-    '.jpg': 'C:/Downloads/Images',
-    '.gif': 'C:/Downloads/Images',
-    '.txt': 'C:/Downloads/Documents',
-    '.exe': 'C:/Downloads/Installers',
-    '.wav': 'C:/Downloads/Audio Files',
-    '.zip': 'C:/Downloads/Compressed Files',
-    '.rar': 'C:/Downloads/Compressed Files',
-    '.7z': 'C:/Downloads/Compressed Files',
-}
+file_def_loc = data['config']['file type folder destinations']
 
-threads = []
-watched_folder = 'C:/Downloads'
-autostart = 0 #  Set to 1 to autostart without asking for if you want to change the directory.
-delete_def = {'.exe', '.test', '.zip', '.rar', '.7z'} # These file types will cause the script to ask if you want to delete them.
+# These file types will cause the script to ask if you want to delete them.
+delete_def = data['config']['delete check list']
 
 
 def Set_Destination(watched_folder, f):
@@ -77,14 +72,15 @@ def File_Move(watched_folder, target, destination):
         shutil.move(os.path.join(watched_folder, target), destination)
 
 
+threads = []
+
+
 def Move_By_Name(watched_folder):
     '''This script checks each file in the watched folder and figures out the destination if any exist.
-    Once a destinations are found, it moves the files via threads.'''
+    Once a destinations are found, it moves the files via threads. It also returns a count of the total files moved.'''
     file_moved_count = 0
     for f in os.listdir(watched_folder):
-        print(f)
         destination = Set_Destination(watched_folder, f)
-        print(destination)
         if destination != 'skip':
             file_moved_count += 1
             file_move_thread = Thread(target=File_Move, args=(watched_folder, f, destination))
