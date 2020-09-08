@@ -1,7 +1,7 @@
 {
     "config": {
         "settings": {
-            "watched folder": "C:/Downloads",
+            "watched_folder": "C:/Downloads",
             "autostart": 0},
         "dictionaries": {
             "keywords": {
@@ -12,20 +12,20 @@
                 "video": [".mp4", ".wave"],
                 "text": [".txt", ".docx", ".doc", ".pdf"]
             },
-            "file_type_dest": {
-                ".7z": "C:/Downloads/Compressed Files",
-                ".docx": "C:/Downloads/Documents",
-                ".exe": "C:/Downloads/Installers",
-                ".gif": "C:/Downloads/Images",
-                ".jpg": "C:/Downloads/Images",
-                ".mp4": "C:/Downloads/Video",
-                ".png": "C:/Downloads/Images",
-                ".rar": "C:/Downloads/Compressed Files",
-                ".txt": "C:/Downloads/Documents",
-                ".wav": "C:/Downloads/Audio Files",
-                ".zip": "C:/Downloads/Compressed Files",
+            "file_def_loc": {
+                ".7z":"C:/Downloads/Compressed Files",
+                ".docx":"C:/Downloads/Documents",
+                ".exe":"C:/Downloads/Installers",
+                ".gif":"C:/Downloads/Images",
+                ".jpg":"C:/Downloads/Images",
+                ".mp4":"C:/Downloads/Video",
+                ".png":"C:/Downloads/Images",
+                ".rar":"C:/Downloads/Compressed Files",
+                ".txt":"C:/Downloads/Documents",
+                ".wav":"C:/Downloads/Audio Files",
+                ".zip":"C:/Downloads/Compressed Files"
             },
-            "delete_check": [".exe", ".test", ".zip", ".rar", ".7z"]
+            "delete_def": [".exe", ".test", ".zip", ".rar", ".7z"]
         }
     }
 }

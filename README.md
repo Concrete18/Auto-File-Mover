@@ -1,6 +1,8 @@
 # Auto Folder Cleaner
 
-This script searches a watched directory in order to move files based on their filetypes and keywords. It works by using For Loops to go through files in the watched directory. It checks for matches in a file type and keyword Dictionaries.
+This script searches a watched directory in order to move files based on their filetypes and keywords.
+It works by using For Loops to go through files in the watched directory.
+It checks for matches in a file type and keyword Dictionaries.
 
 ## Features
 
@@ -33,17 +35,17 @@ This script searches a watched directory in order to move files based on their f
                 "text": [".txt", ".docx", ".doc", ".pdf"]
             },
             "file_type_dest": {
-                ".7z": "C:/Downloads/Compressed Files",
-                ".docx": "C:/Downloads/Documents",
-                ".exe": "C:/Downloads/Installers",
-                ".gif": "C:/Downloads/Images",
-                ".jpg": "C:/Downloads/Images",
-                ".mp4": "C:/Downloads/Video",
-                ".png": "C:/Downloads/Images",
-                ".rar": "C:/Downloads/Compressed Files",
-                ".txt": "C:/Downloads/Documents",
-                ".wav": "C:/Downloads/Audio Files",
-                ".zip": "C:/Downloads/Compressed Files",
+                ".7z":"C:/Downloads/Compressed Files",
+                ".docx":"C:/Downloads/Documents",
+                ".exe":"C:/Downloads/Installers",
+                ".gif":"C:/Downloads/Images",
+                ".jpg":"C:/Downloads/Images",
+                ".mp4":"C:/Downloads/Video",
+                ".png":"C:/Downloads/Images",
+                ".rar":"C:/Downloads/Compressed Files",
+                ".txt":"C:/Downloads/Documents",
+                ".wav":"C:/Downloads/Audio Files",
+                ".zip":"C:/Downloads/Compressed Files",
             },
             "delete_check": [".exe", ".test", ".zip", ".rar", ".7z"]
         }
