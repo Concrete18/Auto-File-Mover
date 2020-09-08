@@ -1,5 +1,5 @@
-from pyfiglet import Figlet
 from threading import Thread
+from pyfiglet import Figlet
 import tkinter.filedialog
 import tkinter as tk
 import fnmatch
@@ -18,22 +18,22 @@ with open(config) as json_file:
     data = json.load(json_file)
 
 # Default watcher folder
-watched_folder = data['config']['watched folder'][0]
+watched_folder = data['config']['settings']['watched_folder']
 
 # Autostart using default folder toggle.
-autostart = data['config']['autostart'][0]
+autostart = data['config']['settings']['autostart']
 
 # Checks for keywords in file names.
-keyword_def = data['config']['keyword folder destinations']
+keyword_def = data['config']['dictionaries']['keywords']
 # TODO Set to only count keywords for certain file types.
 
-file_type_def = data['config']['file type definitions']
+file_type_def = data['config']['dictionaries']['file_type_defs']
 
 # Checks for specific file types.
-file_def_loc = data['config']['file type folder destinations']
+file_def_loc = data['config']['dictionaries']['file_def_loc']
 
 # These file types will cause the script to ask if you want to delete them.
-delete_def = data['config']['delete check list']
+delete_def = data['config']['dictionaries']['delete_def']
 
 
 def Set_Destination(watched_folder, f):
