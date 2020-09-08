@@ -1,11 +1,7 @@
 {
     "config": {
-        "watched folder": [
-            "C:/Downloads"
-        ],
-        "autostart": [
-            0
-        ],
+        "watched folder": "C:/Downloads",
+        "autostart": "0",
         "keyword folder destinations": {
             "Wallpaper": "C:/Downloads/Wallpapers"
         },
