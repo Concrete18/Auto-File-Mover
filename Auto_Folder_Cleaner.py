@@ -1,6 +1,7 @@
 from threading import Thread
 from pyfiglet import Figlet
 import tkinter.filedialog
+import datetime as dt
 import tkinter as tk
 import fnmatch
 import socket
@@ -17,31 +18,36 @@ else:
 with open(config) as json_file:
     data = json.load(json_file)
 
-# Default watcher folder
-watched_folder = data['config']['settings']['watched_folder']
+'''These variables, lists and disctionaries are pulled from
+the config file to allow for easier customization without touching the main code.'''
+# Settings
+watched_folder = data['settings']['watched_folder']  # Default watcher folder.
+autostart = data['settings']['autostart']  # Autostart using default folder toggle.
 
-# Autostart using default folder toggle.
-autostart = data['config']['settings']['autostart']
-
-# Checks for keywords in file names.
-keyword_def = data['config']['dictionaries']['keywords']
+# Dictionaries
 # TODO Set to only count keywords for certain file types.
-
-file_type_def = data['config']['dictionaries']['file_type_defs']
-
-# Checks for specific file types.
-file_def_loc = data['config']['dictionaries']['file_def_loc']
-
-# These file types will cause the script to ask if you want to delete them.
-delete_def = data['config']['dictionaries']['delete_def']
+file_type_groups = data['dictionaries']['file_type_groups']  # Sets file types into groups.
+file_group_dest = data['dictionaries']['file_group_dest']  # Sets destination based on file group.
+keyword_def = data['dictionaries']['keywords']  # Checks for keywords in file names.
+special_case_dest = data['dictionaries']['special_case_dest']  # Lists special cases for file type destinations.
+delete_def = data['dictionaries']['delete_def']  # Lists file types that you might want to delete.
 
 
 def Set_Destination(watched_folder, f):
     '''This function checks for matches for file extensions and keywords.
-    Using what is found, it sets the destination for the file.'''
+    It sets the destination for the file or sets it to skip if the file was deleted.'''
     destination = 'skip'
-    for file_type in file_def_loc:
-        if f.endswith(file_type):
+    file_type = f.split(".")
+    if len(file_type) == 2:
+        file_type = f'.{file_type[1]}'
+    print(file_type)
+    for file_group in file_type_groups:
+        if file_type in file_type_groups:
+            print(file_group)
+
+
+
+
             destination = file_def_loc[file_type]
             for to_delete in delete_def:
                 if fnmatch.fnmatch(f, f'*{to_delete}*'):
@@ -75,6 +81,7 @@ def File_Move(watched_folder, target, destination):
 threads = []
 
 
+# TODO Add progress bar
 def Move_By_Name(watched_folder):
     '''This script checks each file in the watched folder and figures out the destination if any exist.
     Once a destinations are found, it moves the files via threads. It also returns a count of the total files moved.'''
@@ -112,15 +119,16 @@ def Main(watched_folder):
         watched_folder = Set_Watched_Folder(watched_folder)
     else:
         print(f'Autostarting in {watched_folder}.')
-        overall_start = time.perf_counter()
-        file_moved_count = Move_By_Name(watched_folder)
+    overall_start = time.perf_counter()
+    file_moved_count = Move_By_Name(watched_folder)
     for thread in threads:
         thread.join()
     print(f'\nFinished file check of {watched_folder}.\n{file_moved_count} files moved.')
     overall_finish = time.perf_counter()
     elapsed_time = round(overall_finish-overall_start, 2)
     if elapsed_time != 0:
-        converted_elapsed_time = f'{int(elapsed_time/60)}:{int(str(elapsed_time%60).zfill(2))}'
+        # FIXME
+        converted_elapsed_time = str(dt.timedelta(seconds=elapsed_time))
     else:
         converted_elapsed_time = 'Instant'
     print(f'Overall Time Elapsed: {converted_elapsed_time}\n')
