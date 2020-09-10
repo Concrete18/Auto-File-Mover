@@ -1,31 +1,46 @@
 {
-    "config": {
-        "settings": {
+    "settings":
+        {
             "watched_folder": "C:/Downloads",
-            "autostart": 0},
-        "dictionaries": {
-            "keywords": {
-                "Wallpaper": "C:/Downloads/Wallpapers"
-            },
-            "file_type_defs": {
-                "image": [".jpg", ".png", ".gif"],
-                "video": [".mp4", ".wave"],
-                "text": [".txt", ".docx", ".doc", ".pdf"]
-            },
-            "file_def_loc": {
-                ".7z":"C:/Downloads/Compressed Files",
-                ".docx":"C:/Downloads/Documents",
-                ".exe":"C:/Downloads/Installers",
-                ".gif":"C:/Downloads/Images",
-                ".jpg":"C:/Downloads/Images",
-                ".mp4":"C:/Downloads/Video",
-                ".png":"C:/Downloads/Images",
-                ".rar":"C:/Downloads/Compressed Files",
-                ".txt":"C:/Downloads/Documents",
-                ".wav":"C:/Downloads/Audio Files",
-                ".zip":"C:/Downloads/Compressed Files"
-            },
-            "delete_def": [".exe", ".test", ".zip", ".rar", ".7z"]
+            "autostart": 0
+        },
+    "dictionaries":
+        {
+            "file_type_groups":
+                {
+                    "audio": [".mp3", ".wav", ".flac"],
+                    "image": [".jpg", ".png", ".gif", "tiff", "tif"],
+                    "video": [".mp4", ".wave", ".mkv", ".mpeg", "mpeg4", ".avi", ".mpeg4", ".avi", ".wmv"],
+                    "text": [".txt", ".doc", ".docx", ".pdf", ".odt"],
+                    "spreadsheet": [".xls", ".xlsx", ".xlsm", ".ods"],
+                    "compressed": [".deb", ".pkg", ".rar", ".rpm", ".tar", ".gz", ".z", ".zip"],
+                    "executable": [".exe", ".bat", ".apk", ".bin", ".com", ".jar", ".msi", ".wsf"],
+                    "presentation": [".key", ".odp", ".pps", ".ppt", ".pptx"],
+                    "programming": [".c", ".class", ".cpp", ".cs", ".h", ".java", ".php", ".py", ".sh", ".swift", ".vb"]
+                },
+            "file_group_dest":
+                {
+                    "audio":"C:/Downloads/Audio Files",
+                    "image":"C:/Downloads/Images",
+                    "video":"C:/Downloads/Videos",
+                    "text":"C:/Downloads/Documents",
+                    "spreadsheet":"C:/Downloads/Spreadsheets",
+                    "compressed":"C:/Downloads/Compressed Files",
+                    "executable":"C:/Downloads/Executable",
+                    "presentation":"C:/Downloads/Presentations",
+                    "programming":"C:/Downloads/Programming"
+                },
+            "keywords":
+                {
+                    "Wallpaper": ["images", "D:/Google Drive/Photos/Wallpapers"]
+                },
+            "special_case_dest":
+                {
+                    ".exe":"C:/Downloads/Installers"
+                },
+            "delete_def":
+                [
+                    ".exe", ".test", ".zip", ".rar", ".7z"
+                ]
         }
-    }
 }
