@@ -39,7 +39,7 @@ def Get_File_Type(f):
     if len(split_string) == 2:
         file_type = f'.{split_string[1]}'
     else:
-        print()
+        print('Error, Too Many file extensions')
     return file_type
 
 
@@ -47,6 +47,7 @@ def Set_Destination(watched_folder, f):
     '''This function checks for matches for file extensions and keywords.
     It sets the destination for the file or sets it to skip if the file was deleted.'''
     destination = 'skip'
+    print(f)
     file_type = Get_File_Type(f)
     for file_group, file_type_list in file_type_groups.items():
         if file_type in file_type_list:
@@ -57,8 +58,10 @@ def Set_Destination(watched_folder, f):
                     os.remove(os.path.join(watched_folder, f))
                     print('Deleted File.')
                     return 'skip'
+            if file_type in special_case_dest:
+                destination = special_case_dest[file_type]
             for keyword, keyword_data in keywords_dest.items():
-                if file_group in keyword_data:
+                if keyword in f:
                     destination = keyword_data[1]
                     print(destination)
     return destination
@@ -84,6 +87,8 @@ def Move_By_Name(watched_folder):
     Once a destinations are found, it moves the files via threads. It also returns a count of the total files moved.'''
     file_moved_count = 0
     for f in os.listdir(watched_folder):
+        if '.' not in f:
+            continue
         destination = Set_Destination(watched_folder, f)
         if destination != 'skip':
             file_moved_count += 1
@@ -124,7 +129,7 @@ def Main(watched_folder):
     overall_finish = time.perf_counter()
     elapsed_time = round(overall_finish-overall_start, 2)
     if elapsed_time != 0:
-        converted_elapsed_time = str(dt.timedelta(seconds=elapsed_time))
+        converted_elapsed_time = str(dt.timedelta(seconds=elapsed_time))  # TODO Set format to only be H:M:S
     else:
         converted_elapsed_time = 'Instant'
     print(f'Overall Time Elapsed: {converted_elapsed_time}\n')
