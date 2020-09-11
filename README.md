@@ -53,13 +53,13 @@ It checks for matches in a file type and keyword Dictionaries.
                     "presentation":"C:/Downloads/Presentations",
                     "programming":"C:/Downloads/Programming"
                 },
-            "keywords":
+            "keywords_dest":
                 {
                     "Wallpaper": ["images", "D:/Google Drive/Photos/Wallpapers"]
                 },
             "special_case_dest":
                 {
-                    ".exe":"C:/Downloads/Installers"
+                    ".mkv":"C:/Downloads/HD Videos"
                 },
             "delete_def":
                 [
