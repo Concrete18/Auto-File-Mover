@@ -30,9 +30,9 @@
                     "presentation":"C:/Downloads/Presentations",
                     "programming":"C:/Downloads/Programming"
                 },
-            "keywords":
+            "keywords_dest":
                 {
-                    "Wallpaper": ["images", "D:/Google Drive/Photos/Wallpapers"]
+                    "Wallpaper": ["image", "D:/Google Drive/Photos/Wallpapers"]
                 },
             "special_case_dest":
                 {
