@@ -25,44 +25,42 @@ watched_folder = data['settings']['watched_folder']  # Default watcher folder.
 autostart = data['settings']['autostart']  # Autostart using default folder toggle.
 
 # Dictionaries
-# TODO Set to only count keywords for certain file types.
 file_type_groups = data['dictionaries']['file_type_groups']  # Sets file types into groups.
 file_group_dest = data['dictionaries']['file_group_dest']  # Sets destination based on file group.
-keyword_def = data['dictionaries']['keywords']  # Checks for keywords in file names.
+keywords_dest = data['dictionaries']['keywords_dest']  # Checks for keywords in file names.
 special_case_dest = data['dictionaries']['special_case_dest']  # Lists special cases for file type destinations.
 delete_def = data['dictionaries']['delete_def']  # Lists file types that you might want to delete.
+
+
+def Get_File_Type(f):
+    '''Gets file type from the given file name.'''
+    file_type = ''
+    split_string = f.split(".")
+    if len(split_string) == 2:
+        file_type = f'.{split_string[1]}'
+    else:
+        print()
+    return file_type
 
 
 def Set_Destination(watched_folder, f):
     '''This function checks for matches for file extensions and keywords.
     It sets the destination for the file or sets it to skip if the file was deleted.'''
     destination = 'skip'
-    file_type = f.split(".")
-    if len(file_type) == 2:
-        file_type = f'.{file_type[1]}'
-    print(file_type)
-    for file_group in file_type_groups:
-        if file_type in file_type_groups:
-            print(file_group)
-
-
-
-
-            destination = file_def_loc[file_type]
-            for to_delete in delete_def:
-                if fnmatch.fnmatch(f, f'*{to_delete}*'):
-                    del_resp = input(f'{f} found.\nDo you want to delete it?\n')
-                    if del_resp == 'yes' or del_resp == 'y':
-                        os.remove(os.path.join(watched_folder, f))
-                        print('Deleted File.')
-                        return 'skip'
-                    else:
-                        print(f'Ok, copying {f} to the {file_type} default folder.\n')
-                        destination =  file_def_loc[file_type]
-            for keyword in keyword_def:
-                if fnmatch.fnmatch(f, f'*{keyword}*'):
-                    destination = keyword_def[keyword]
-                    print(keyword_def[keyword])
+    file_type = Get_File_Type(f)
+    for file_group, file_type_list in file_type_groups.items():
+        if file_type in file_type_list:
+            destination = file_group_dest[file_group]
+            if file_type in delete_def:
+                del_resp = input(f'{f} found.\nDo you want to delete it?\n')
+                if del_resp == 'yes' or del_resp == 'y':
+                    os.remove(os.path.join(watched_folder, f))
+                    print('Deleted File.')
+                    return 'skip'
+            for keyword, keyword_data in keywords_dest.items():
+                if file_group in keyword_data:
+                    destination = keyword_data[1]
+                    print(destination)
     return destination
 
 
@@ -72,13 +70,12 @@ def File_Move(watched_folder, target, destination):
     if os.path.isdir(destination) is False:
         os.mkdir(destination)
     if os.path.exists(os.path.join(destination, target)):
-        print(f'{target} already exists.\nLeaving file as is.')
+        print(f'{target} already exists at destination.\nLeaving file as is.')
     else:
         shutil.move(os.path.join(watched_folder, target), destination)
 
 
-# Initializes the thead list for use in Move_By_Name() and Main()
-threads = []
+threads = []  # Initializes the thead list for use in Move_By_Name() and Main()
 
 
 # TODO Add progress bar
@@ -127,7 +124,6 @@ def Main(watched_folder):
     overall_finish = time.perf_counter()
     elapsed_time = round(overall_finish-overall_start, 2)
     if elapsed_time != 0:
-        # FIXME
         converted_elapsed_time = str(dt.timedelta(seconds=elapsed_time))
     else:
         converted_elapsed_time = 'Instant'
