@@ -12,6 +12,7 @@ It checks for matches in a file type and keyword Dictionaries.
 * Ask to delete files based on a delete file type list.
 * AutoStart Capable but also has File Dialog to choose any folder for execution.
 * Threading for completing multiple transfers at a time.
+* Unit Testing for verifying working functions.
 
 ## Future Plans
 

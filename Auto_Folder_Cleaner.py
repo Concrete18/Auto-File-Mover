@@ -11,7 +11,9 @@ import json
 import sys
 import os
 
-if socket.gethostname() == 'Aperture-Two':
+if  __name__ != '__main__':
+    config = 'config.json'
+elif socket.gethostname() == 'Aperture-Two':
     config = 'personal_config.json'
 else:
     config = 'config.json'
@@ -33,13 +35,10 @@ delete_def = data['dictionaries']['delete_def']  # Lists file types that you mig
 
 
 def Get_File_Type(f):
-    '''Gets file type from the given file name.'''
+    '''Gets file type from the given file name. It only uses the last period separating extension.'''
     file_type = ''
     split_string = f.split(".")
-    if len(split_string) == 2:
-        file_type = f'.{split_string[1]}'
-    else:
-        print('Error, Too Many file extensions')
+    file_type = f'.{split_string[-1]}'
     return file_type
 
 
@@ -47,13 +46,12 @@ def Set_Destination(watched_folder, f):
     '''This function checks for matches for file extensions and keywords.
     It sets the destination for the file or sets it to skip if the file was deleted.'''
     destination = 'skip'
-    print(f)
     file_type = Get_File_Type(f)
     for file_group, file_type_list in file_type_groups.items():
         if file_type in file_type_list:
             destination = file_group_dest[file_group]
             if file_type in delete_def:
-                del_resp = input(f'{f} found.\nDo you want to delete it?\n')
+                del_resp = input(f'{f} found.\nDo you want to delete it? (Will skip recycle bin)\n')
                 if del_resp == 'yes' or del_resp == 'y':
                     os.remove(os.path.join(watched_folder, f))
                     print('Deleted File.')
@@ -61,9 +59,9 @@ def Set_Destination(watched_folder, f):
             if file_type in special_case_dest:
                 destination = special_case_dest[file_type]
             for keyword, keyword_data in keywords_dest.items():
-                if keyword in f:
-                    destination = keyword_data[1]
-                    print(destination)
+                if keyword.lower() in f.lower():
+                    if file_group == keyword_data[0]:
+                        destination = keyword_data[1]
     return destination
 
 
