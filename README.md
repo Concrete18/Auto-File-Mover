@@ -17,7 +17,7 @@ It checks for matches in a file type and keyword Dictionaries.
 ## Future Plans
 
 * Progress Bar (Once I figure out how to)
-* Incorporate [send2trash](https://github.com/arsenetar/send2trash) in delete check.
+* Add Recycle bin support(Windows).
 
 ## Preferences Example
 
