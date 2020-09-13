@@ -40,7 +40,7 @@ def Run_Delete_Empty_Folders(watched_folder):
         if os.path.exists(folder_path) and not os.path.isfile(folder_path):
             dir = os.listdir(folder_path)
             if len(dir) == 0:
-                os.remove(folder_path)
+                os.rmdir(folder_path)
                 delete_total += 1
         if delete_total > 0:
             print('Deleted empty folders.')
