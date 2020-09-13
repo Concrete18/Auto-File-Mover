@@ -1,5 +1,4 @@
 from threading import Thread
-from pyfiglet import Figlet
 import tkinter.filedialog
 import datetime as dt
 import tkinter as tk
@@ -32,6 +31,19 @@ file_group_dest = data['dictionaries']['file_group_dest']  # Sets destination ba
 keywords_dest = data['dictionaries']['keywords_dest']  # Checks for keywords in file names.
 special_case_dest = data['dictionaries']['special_case_dest']  # Lists special cases for file type destinations.
 delete_def = data['dictionaries']['delete_def']  # Lists file types that you might want to delete.
+
+
+def Run_Delete_Empty_Folders(watched_folder):
+    delete_total = 0
+    for folder in os.listdir(watched_folder):
+        folder_path = os.path.join(watched_folder, folder)
+        if os.path.exists(folder_path) and not os.path.isfile(folder_path):
+            dir = os.listdir(folder_path)
+            if len(dir) == 0:
+                os.remove(folder_path)
+                delete_total += 1
+        if delete_total > 0:
+            print('Deleted empty folders.')
 
 
 def Get_File_Type(f):
@@ -109,12 +121,7 @@ def Set_Watched_Folder(watched_folder):
 
 def Main(watched_folder):
     '''This is the main function that introduces the script and sets up backbone for everything.'''
-    title = 'Auto Folder Cleaner'
-    try:
-        text = Figlet(font='slant')
-        print(text.renderText(title))
-    except:
-        print(title)
+    print('Auto Folder Cleaner\n')
     if autostart != 1:
         watched_folder = Set_Watched_Folder(watched_folder)
     else:
@@ -124,10 +131,16 @@ def Main(watched_folder):
     for thread in threads:
         thread.join()
     print(f'\nFinished file check of {watched_folder}.\n{file_moved_count} files moved.')
+    delete_empty_folders = data['settings']['delete_empty_folders']  # Default watcher folder.
+    if delete_empty_folders == 1:
+        try:
+            Run_Delete_Empty_Folders(watched_folder)
+        except PermissionError:
+            print('Access is denied: Failed to clean empty folders.')
     overall_finish = time.perf_counter()
     elapsed_time = round(overall_finish-overall_start, 2)
     if elapsed_time != 0:
-        converted_elapsed_time = str(dt.timedelta(seconds=elapsed_time))  # TODO Set format to only be H:M:S
+        converted_elapsed_time = str(dt.timedelta(seconds=elapsed_time))
     else:
         converted_elapsed_time = 'Instant'
     print(f'Overall Time Elapsed: {converted_elapsed_time}\n')
