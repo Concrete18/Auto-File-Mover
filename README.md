@@ -7,10 +7,10 @@ It checks for matches in a file type and keyword Dictionaries.
 ## Features
 
 * Fully Configurable preferences(Example Below).
-* Json based config file with PC name detection for choosing the config to use.
 * Auto move files based on keywords or filetypes.
 * Ask to delete files based on a delete file type list.
-* AutoStart Capable but also has File Dialog to choose any folder for execution.
+* AutoStart Capable but also has File Dialog to choose any folder for execution if AutoStart is disabled in config.
+* Auto delete empty folders if config is on.
 * Threading for completing multiple transfers at a time.
 * Unit Testing for verifying working functions.
 
@@ -21,12 +21,15 @@ It checks for matches in a file type and keyword Dictionaries.
 
 ## Preferences Example
 
+Never use \ for paths, instead use \\ or / instead.
+
 ```json
 {
     "settings":
         {
             "watched_folder": "C:/Downloads",
-            "autostart": 0
+            "autostart": 0,
+            "delete_empty_folders": 1
         },
     "dictionaries":
         {
