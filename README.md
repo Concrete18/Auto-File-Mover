@@ -6,13 +6,13 @@ It checks for matches in a file type and keyword Dictionaries.
 
 ## Features
 
-* Fully Configurable preferences(Example Below).
+* Fully Configurable preferences. (_Example Below_)
 * Auto move files based on keywords or filetypes.
 * Ask to delete files based on a delete file type list.
 * AutoStart Capable but also has File Dialog to choose any folder for execution if AutoStart is disabled in config.
 * Auto delete empty folders if config is on.
 * Threading for completing multiple transfers at a time.
-* Unit Testing for verifying working functions.
+* Unit Testing for verifying working functions. (_Currently Broken after some optimizations_)
 
 ## Future Plans
 
