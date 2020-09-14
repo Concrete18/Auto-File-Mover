@@ -8,11 +8,12 @@ It checks for matches in a file type and keyword Dictionaries.
 
 * Fully Configurable preferences. (_Example Below_)
 * Auto move files based on keywords or filetypes.
+* Keywords can be set to only work with a specific file group/s or a file type/s.
 * Ask to delete files based on a delete file type list.
 * AutoStart Capable but also has File Dialog to choose any folder for execution if AutoStart is disabled in config.
-* Auto delete empty folders if config is on.
+* Auto delete empty folders if config is set to 1.
 * Threading for completing multiple transfers at a time.
-* Unit Testing for verifying working functions. (_Currently Broken after some optimizations_)
+* Unit Testing for verifying working functions. (_Currently Broken after some optimizations to main code_)
 
 ## Future Plans
 
@@ -59,7 +60,8 @@ Never use \ for paths, instead use \\ or / instead.
                 },
             "keywords_dest":
                 {
-                    "Wallpaper": ["images", "D:/Google Drive/Photos/Wallpapers"]
+                    "wallpaper": [["image"], "D:/Google Drive/Photos/Wallpapers"],
+                    "python": [[".py"], "D:/Google Drive/Coding/Python"]
                 },
             "special_case_dest":
                 {
@@ -71,4 +73,5 @@ Never use \ for paths, instead use \\ or / instead.
                 ]
         }
 }
+
 ```
