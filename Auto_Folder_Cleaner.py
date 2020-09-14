@@ -35,12 +35,11 @@ delete_def = data['dictionaries']['delete_def']  # Lists file types that you mig
 
 def Run_Delete_Empty_Folders(watched_folder):
     delete_total = 0
-    for folder in os.listdir(watched_folder):
-        folder_path = os.path.join(watched_folder, folder)
-        if os.path.exists(folder_path) and not os.path.isfile(folder_path):
-            dir = os.listdir(folder_path)
+    for f in os.scandir(watched_folder):
+        if os.path.exists(f.path) and not os.path.isfile(f.path):
+            dir = os.listdir(f.path)
             if len(dir) == 0:
-                os.rmdir(folder_path)
+                os.rmdir(f.path)
                 delete_total += 1
         if delete_total > 0:
             print('Deleted empty folders.')
@@ -49,7 +48,7 @@ def Run_Delete_Empty_Folders(watched_folder):
 def Get_File_Type(f):
     '''Gets file type from the given file name. It only uses the last period separating extension.'''
     file_type = ''
-    split_string = f.split(".")
+    split_string = f.name.split(".")
     file_type = f'.{split_string[-1]}'
     return file_type
 
@@ -63,29 +62,31 @@ def Set_Destination(watched_folder, f):
         if file_type in file_type_list:
             destination = file_group_dest[file_group]
             if file_type in delete_def:
-                del_resp = input(f'{f} found.\nDo you want to delete it? (Will skip recycle bin)\n')
+                del_resp = input(f'{f.name} found.\nDo you want to delete it? (Will skip recycle bin)\n')
                 if del_resp == 'yes' or del_resp == 'y':
-                    os.remove(os.path.join(watched_folder, f))
+                    os.remove(f.path)
                     print('Deleted File.')
                     return 'skip'
             if file_type in special_case_dest:
                 destination = special_case_dest[file_type]
             for keyword, keyword_data in keywords_dest.items():
-                if keyword.lower() in f.lower():
+                if keyword.lower() in f.name.lower():
                     if file_group == keyword_data[0]:
+                        destination = keyword_data[1]
+                    elif file_type in keyword_data[0]:
                         destination = keyword_data[1]
     return destination
 
 
-def File_Move(watched_folder, target, destination):
+def File_Move(target, destination):
     '''Moves Target file to Destination after making the destination directory if it does not exist.
     It will also leave the file where it is if it already exists at the destination.'''
     if os.path.isdir(destination) is False:
         os.mkdir(destination)
-    if os.path.exists(os.path.join(destination, target)):
-        print(f'{target} already exists at destination.\nLeaving file as is.')
+    if os.path.exists(os.path.join(destination, target.name)):
+        print(f'{target.name} already exists at destination.\nLeaving file as is.')
     else:
-        shutil.move(os.path.join(watched_folder, target), destination)
+        shutil.move(target.path, destination)
 
 
 threads = []  # Initializes the thead list for use in Move_By_Name() and Main()
@@ -96,15 +97,14 @@ def Move_By_Name(watched_folder):
     '''This script checks each file in the watched folder and figures out the destination if any exist.
     Once a destinations are found, it moves the files via threads. It also returns a count of the total files moved.'''
     file_moved_count = 0
-    for f in os.listdir(watched_folder):
-        if '.' not in f:
-            continue
-        destination = Set_Destination(watched_folder, f)
-        if destination != 'skip':
-            file_moved_count += 1
-            file_move_thread = Thread(target=File_Move, args=(watched_folder, f, destination))
-            file_move_thread.start()
-            threads.append(file_move_thread)
+    for _file in os.scandir(watched_folder):
+        if not _file.name.startswith('.') and _file.is_file():
+            destination = Set_Destination(watched_folder, _file)
+            if destination != 'skip':
+                file_moved_count += 1
+                file_move_thread = Thread(target=File_Move, args=(_file, destination))
+                file_move_thread.start()
+                threads.append(file_move_thread)
     return file_moved_count
 
 
@@ -121,7 +121,7 @@ def Set_Watched_Folder(watched_folder):
 
 def Main(watched_folder):
     '''This is the main function that introduces the script and sets up backbone for everything.'''
-    print('Auto Folder Cleaner\n')
+    print('Auto Folder Cleaner')
     if autostart != 1:
         watched_folder = Set_Watched_Folder(watched_folder)
     else:
@@ -133,10 +133,7 @@ def Main(watched_folder):
     print(f'\nFinished file check of {watched_folder}.\n{file_moved_count} files moved.')
     delete_empty_folders = data['settings']['delete_empty_folders']  # Default watcher folder.
     if delete_empty_folders == 1:
-        try:
-            Run_Delete_Empty_Folders(watched_folder)
-        except PermissionError:
-            print('Access is denied: Failed to clean empty folders.')
+        Run_Delete_Empty_Folders(watched_folder)
     overall_finish = time.perf_counter()
     elapsed_time = round(overall_finish-overall_start, 2)
     if elapsed_time != 0:
