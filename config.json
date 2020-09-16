@@ -10,7 +10,7 @@
             "file_type_groups":
                 {
                     "audio": [".mp3", ".wav", ".flac"],
-                    "image": [".jpg", ".png", ".gif", "tiff", "tif"],
+                    "image": [".jpg", ".png", ".gif", "tiff", "tif", "BMP"],
                     "video": [".mp4", ".wave", ".mkv", ".mpeg", "mpeg4", ".avi", ".mpeg4", ".avi", ".wmv"],
                     "text": [".txt", ".doc", ".docx", ".pdf", ".odt"],
                     "spreadsheet": [".xls", ".xlsx", ".xlsm", ".ods"],
@@ -33,7 +33,7 @@
                 },
             "keywords_dest":
                 {
-                    "wallpaper": [["image"], "C:/Downloads/Wallpapers"],
+                    "wallpaper": [[".jpg", ".png"], "C:/Downloads/Wallpapers"],
                     "python": [[".py"], "C:/Downloads/Coding/Python"]
                 },
             "special_case_dest":
