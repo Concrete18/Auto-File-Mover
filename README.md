@@ -13,7 +13,7 @@ It checks for matches in a file type and keyword Dictionaries.
 * AutoStart Capable but also has File Dialog to choose any folder for execution if AutoStart is disabled in config.
 * Auto delete empty folders if config is set to 1.
 * Threading for completing multiple transfers at a time.
-* Unit Testing for verifying working functions. (_Currently Broken after some optimizations to main code_)
+* Unit Testing for verifying a few functions.
 
 ## Future Plans
 
