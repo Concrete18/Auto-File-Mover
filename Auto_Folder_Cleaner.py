@@ -64,16 +64,18 @@ def Set_Destination(watched_folder, f):
             if file_type in delete_def:
                 del_resp = input(f'{f.name} found.\nDo you want to delete it? (Will skip recycle bin)\n')
                 if del_resp == 'yes' or del_resp == 'y':
+                    # TODO Add recycle bin support.
                     os.remove(f.path)
                     print('Deleted File.')
                     return 'skip'
             if file_type in special_case_dest:
                 destination = special_case_dest[file_type]
             for keyword, keyword_data in keywords_dest.items():
+                # TODO Add improved dictionaries in list.
                 if keyword.lower() in f.name.lower():
-                    if file_group == keyword_data[0]:
+                    if file_type in keyword_data[0]:
                         destination = keyword_data[1]
-                    elif file_type in keyword_data[0]:
+                    elif file_group == keyword_data[0][0]:
                         destination = keyword_data[1]
     return destination
 
@@ -92,7 +94,7 @@ def File_Move(target, destination):
 threads = []  # Initializes the thead list for use in Move_By_Name() and Main()
 
 
-# TODO Add progress bar
+# TODO Add progress bar.
 def Move_By_Name(watched_folder):
     '''This script checks each file in the watched folder and figures out the destination if any exist.
     Once a destinations are found, it moves the files via threads. It also returns a count of the total files moved.'''
@@ -109,7 +111,8 @@ def Move_By_Name(watched_folder):
 
 
 def Set_Watched_Folder(watched_folder):
-    '''Sets the Watched folder via tkinter Directory Dialog if you type cd. otherwise it uses what you entered for the watched folder.'''
+    '''Sets the Watched folder via tkinter Directory Dialog if you type cd.
+    Otherwise it uses what you entered for the watched folder.'''
     tk.Tk().withdraw()
     response = input("Press Enter to continue with default\nType cd to enter new directory\n")
     if response == 'cd':
@@ -120,7 +123,7 @@ def Set_Watched_Folder(watched_folder):
 
 
 def Main(watched_folder):
-    '''This is the main function that introduces the script and sets up backbone for everything.'''
+    '''This is the main function that introduces the script and sets up the backbone for everything.'''
     print('Auto Folder Cleaner')
     if autostart != 1:
         watched_folder = Set_Watched_Folder(watched_folder)
