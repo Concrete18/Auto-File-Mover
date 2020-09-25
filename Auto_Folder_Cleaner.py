@@ -30,19 +30,21 @@ file_type_groups = data['dictionaries']['file_type_groups']  # Sets file types i
 file_group_dest = data['dictionaries']['file_group_dest']  # Sets destination based on file group.
 keywords_dest = data['dictionaries']['keywords_dest']  # Checks for keywords in file names.
 special_case_dest = data['dictionaries']['special_case_dest']  # Lists special cases for file type destinations.
-delete_def = data['dictionaries']['delete_def']  # Lists file types that you might want to delete.
+delete_def = data['dictionaries']['delete_def']  # Lists file types that you might want to delete.\
 
 
 def Run_Delete_Empty_Folders(watched_folder):
-    delete_total = 0
-    for f in os.scandir(watched_folder):
-        if os.path.exists(f.path) and not os.path.isfile(f.path):
-            dir = os.listdir(f.path)
-            if len(dir) == 0:
-                os.rmdir(f.path)
-                delete_total += 1
-        if delete_total > 0:
-            print('Deleted empty folders.')
+    delete_empty_folders = data['settings']['delete_empty_folders']  # Default watcher folder.
+    if delete_empty_folders == 1:
+        delete_total = 0
+        for f in os.scandir(watched_folder):
+            if os.path.exists(f.path) and not os.path.isfile(f.path):
+                dir = os.scandir(f.path)
+                if len(dir) == 0:
+                    os.rmdir(f.path)
+                    delete_total += 1
+            if delete_total > 0:
+                print('Deleted empty folders.')
 
 
 def Get_File_Type(f):
@@ -71,7 +73,6 @@ def Set_Destination(watched_folder, f):
             if file_type in special_case_dest:
                 destination = special_case_dest[file_type]
             for keyword, keyword_data in keywords_dest.items():
-                # TODO Add improved dictionaries in list.
                 if keyword.lower() in f.name.lower():
                     if file_type in keyword_data[0]:
                         destination = keyword_data[1]
@@ -134,9 +135,7 @@ def Main(watched_folder):
     for thread in threads:
         thread.join()
     print(f'\nFinished file check of {watched_folder}.\n{file_moved_count} files moved.')
-    delete_empty_folders = data['settings']['delete_empty_folders']  # Default watcher folder.
-    if delete_empty_folders == 1:
-        Run_Delete_Empty_Folders(watched_folder)
+    Run_Delete_Empty_Folders(watched_folder)
     overall_finish = time.perf_counter()
     elapsed_time = round(overall_finish-overall_start, 2)
     if elapsed_time != 0:
