@@ -60,8 +60,9 @@ Never use \ for paths, instead use \\ or / instead.
                 },
             "keywords_dest":
                 {
-                    "wallpaper": [["image"], "D:/Google Drive/Photos/Wallpapers"],
-                    "python": [[".py"], "D:/Google Drive/Coding/Python"]
+                    "wallpaper": [[".jpg", ".png"], "C:/Downloads/Wallpapers"],
+                    "Family": [[".jpg", ".png"], "C:/Downloads/Family Videos"],
+                    "python": [[".py"], "C:/Downloads/Coding/Python"]
                 },
             "special_case_dest":
                 {
@@ -73,5 +74,4 @@ Never use \ for paths, instead use \\ or / instead.
                 ]
         }
 }
-
 ```
