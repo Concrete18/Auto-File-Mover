@@ -1,7 +1,7 @@
 # Auto Folder Cleaner
 
 This script searches a watched directory in order to move files based on their filetypes and keywords.
-It works by using For Loops to go through files in the watched directory.
+It works by using for loops to go through files in the watched directory.
 It checks for matches in a file type and keyword Dictionaries.
 
 ## Features
@@ -18,7 +18,7 @@ It checks for matches in a file type and keyword Dictionaries.
 ## Future Plans
 
 * Progress Bar (Once I figure out how to)
-* Add Recycle bin support(Windows).
+* Add Recycle bin support (Windows).
 
 ## Preferences Example
 
