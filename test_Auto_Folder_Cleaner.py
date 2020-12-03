@@ -1,4 +1,4 @@
-from Auto_Folder_Cleaner import Set_Destination, Get_File_Type, File_Move
+from Auto_Folder_Cleaner import Cleaner
 from unittest.mock import patch
 import unittest
 import json
@@ -42,17 +42,20 @@ class TestAFC(unittest.TestCase):
 
 
     def test_Set_Destination(self):
+        App = Cleaner()
+        self.watched_folder = 'C:/Downloads'
         # Tests for correct file destination being returned properly based on json config.
-        self.assertEqual(Set_Destination('C:/Downloads', self.files['videofile.mkv']), "C:/Downloads/HD Videos")
-        self.assertEqual(Set_Destination('C:/Downloads', self.files['wallpaper.png']), "C:/Downloads/Wallpapers")
-        self.assertEqual(Set_Destination('C:/Downloads', self.files['python.mp4']), "C:/Downloads/Videos")
-        self.assertEqual(Set_Destination('C:/Downloads', self.files['python.py']), "C:/Downloads/Coding/Python")
+        self.assertEqual(App.Set_Destination(self.files['videofile.mkv']), "C:/Downloads/HD Videos")
+        self.assertEqual(App.Set_Destination(self.files['wallpaper.png']), "C:/Downloads/Wallpapers")
+        self.assertEqual(App.Set_Destination(self.files['python.mp4']), "C:/Downloads/Videos")
+        self.assertEqual(App.Set_Destination(self.files['python.py']), "C:/Downloads/Coding/Python")
 
 
     def test_Get_File_Type(self):
+        App = Cleaner()
         # Tests Get_File_Type function to be sure it works with a variety of file names.
-        self.assertEqual(Get_File_Type(self.files['wallpaper.png']), ".png")
-        self.assertEqual(Get_File_Type(self.files['wallpaper.png.zip']), ".zip")
+        self.assertEqual(App.Get_File_Type(self.files['wallpaper.png']), ".png")
+        self.assertEqual(App.Get_File_Type(self.files['wallpaper.png.zip']), ".zip")
 
     # FIXME Mock input in Delete_Check function.
     # def test_Delete_Check(self):
